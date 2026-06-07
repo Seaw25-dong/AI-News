@@ -8,26 +8,26 @@ export default function Home() {
 
   const pageSize = 10;
 
- useEffect(() => {
-  fetch("http://localhost:3001/news")
-    .then(res => res.json())
-    .then(data => {
-      console.log("API data:", data);
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/news")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("API data:", data);
 
-      // FIX CỨNG
-      if (Array.isArray(data)) {
-        setNews(data);
-      } else if (Array.isArray(data?.data)) {
-        setNews(data.data);
-      } else {
+        // FIX CỨNG
+        if (Array.isArray(data)) {
+          setNews(data);
+        } else if (Array.isArray(data?.data)) {
+          setNews(data.data);
+        } else {
+          setNews([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
         setNews([]);
-      }
-    })
-    .catch(err => {
-      console.error("Fetch error:", err);
-      setNews([]);
-    });
-}, []);
+      });
+  }, []);
 
   const startIndex = (page - 1) * pageSize;
   const currentNews = news.slice(startIndex, startIndex + pageSize);
@@ -35,7 +35,6 @@ export default function Home() {
 
   return (
     <div className="p-6">
-
       {currentNews.map((item, index) => (
         <NewsCard
           key={index}
@@ -68,7 +67,6 @@ export default function Home() {
           Next
         </button>
       </div>
-
     </div>
   );
 }
