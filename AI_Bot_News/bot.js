@@ -1,75 +1,60 @@
 require("dotenv").config();
 
 const cron = require("node-cron");
-
 const connectDB = require("./db");
 const fetchNews = require("./rss");
 const summarize = require("./summarize");
-const News = require("./models/News");
 const translateToVI = require("./translate");
+const News = require("./models/News");
+
+let isRunning = false;
+
 async function runBot() {
+  if (isRunning) {
+    console.log("⏳ Bot still running... skip this cycle");
+    return;
+  }
+
+  isRunning = true;
+
   try {
     console.log("Checking news...");
 
     const news = await fetchNews();
-
     if (!news || news.length === 0) return;
 
-    // 🔥 SORT: mới nhất trước
-    news.sort((a, b) => {
-      return (
-        new Date(b.pubDate || b.isoDate) - new Date(a.pubDate || a.isoDate)
-      );
-    });
+    // sort mới nhất
+    news.sort(
+      (a, b) =>
+        new Date(b.pubDate || b.isoDate) -
+        new Date(a.pubDate || a.isoDate)
+    );
 
     const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-
-    let insertedCount = 0; // 🔥 chỉ đếm bài mới insert
+    let insertedCount = 0;
 
     for (const item of news) {
-      if (insertedCount >= 5) {
-        console.log("Reached limit 5 NEW articles");
-        break;
-      }
+      if (insertedCount >= 5) break;
 
       if (!item?.title || !item?.link) continue;
 
-      const itemDate = new Date(item.pubDate || item.isoDate);
+      const itemDate = new Date(item.pubDate || item.isoDate || Date.now());
 
-      // 🔥 chỉ lấy bài 24h
       if (itemDate.getTime() < oneDayAgo) continue;
 
-      // check duplicate
+      // check duplicate nhanh
       const exists = await News.findOne({ link: item.link });
+      if (exists) continue;
 
-      if (exists) {
-        continue;
-      }
-
-      let titleVI = "";
-      let summaryVI = "";
-
-      try {
-        titleVI = await translateToVI(item.title);
-      } catch {
-        titleVI = item.title;
-      }
-
-      try {
-        summaryVI = await summarize(item.contentSnippet || item.title);
-        summaryVI = await translateToVI(summaryVI);
-      } catch {
-        summaryVI = item.contentSnippet || item.title;
-      }
       console.log("New article:", item.title);
 
-      let summary = "";
+      // ⚡ xử lý song song 2 task chính
+      const [titleVI, summaryRaw] = await Promise.all([
+        translateSafe(item.title),
+        summarizeSafe(item.contentSnippet || item.title),
+      ]);
 
-      try {
-        summary = await summarize(item.contentSnippet || item.title);
-      } catch (err) {
-        summary = item.title;
-      }
+      const summaryVI = await translateSafe(summaryRaw);
 
       const article = await News.create({
         title: titleVI,
@@ -85,14 +70,33 @@ async function runBot() {
         global.io.emit("new-news", article);
       }
 
-      insertedCount++; // 🔥 chỉ tăng khi insert thành công
+      insertedCount++;
     }
   } catch (err) {
     console.error("Bot error:", err.message);
+  } finally {
+    isRunning = false;
   }
 }
 
-// 🔥 START
+// helper: translate safe
+async function translateSafe(text) {
+  try {
+    return await translateToVI(text);
+  } catch {
+    return text;
+  }
+}
+
+// helper: summarize safe
+async function summarizeSafe(text) {
+  try {
+    return await summarize(text);
+  } catch {
+    return text;
+  }
+}
+
 async function start() {
   await connectDB();
 
@@ -101,9 +105,8 @@ async function start() {
 
   await runBot();
 
-  cron.schedule("0 * * * *", async () => {
-    await runBot();
-  });
+  // chạy mỗi 2 phút
+  cron.schedule("*/2 * * * *", runBot);
 }
 
 start();
