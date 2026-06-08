@@ -46,17 +46,17 @@ export default function Home() {
 
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
 
-        <div className="max-w-6xl mx-auto px-6 py-24 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24 relative z-10">
           <div className="animate-fadeInUp">
             <p className="text-blue-400 font-semibold tracking-[0.3em] uppercase">
               AI DAILY NEWS
             </p>
 
-            <h2 className="text-5xl md:text-6xl font-bold leading-tight max-w-4xl mt-5">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight max-w-4xl mt-5">
               Stay Updated With The Future Of AI
             </h2>
 
-            <p className="mt-6 text-lg text-gray-300 max-w-2xl leading-8">
+            <p className="mt-5 text-base sm:text-lg text-gray-300 max-w-2xl leading-7 sm:leading-8">
               Discover the newest breakthroughs in artificial intelligence,
               machine learning, robotics, and modern technology.
             </p>
@@ -84,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* NEWS SECTION */}
-      <main className="relative max-w-6xl mx-auto px-6 py-20 overflow-hidden">
+      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 overflow-hidden">
         {/* BACKGROUND ANIMATION */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div
@@ -133,9 +133,9 @@ export default function Home() {
         </div>
 
         {/* TITLE */}
-        <div className="relative z-10 flex items-center justify-between mb-14">
+       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 mb-10 sm:mb-14">
           <div>
-            <h3 className="text-4xl font-bold text-gray-900">
+            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">
               Latest Articles
             </h3>
 
@@ -180,7 +180,7 @@ export default function Home() {
               className={`
                 transition-all
                 duration-500
-                ${index % 2 === 0 ? "self-start" : "self-end"}
+                sm:${index % 2 === 0 ? "self-start" : "self-end"}
               `}
             >
               <NewsCard
