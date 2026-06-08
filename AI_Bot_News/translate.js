@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const OpenAI = require("openai");
 
 const client = new OpenAI({
@@ -5,23 +7,30 @@ const client = new OpenAI({
 });
 
 async function translateToVI(text) {
-  if (!text) return "";
+  try {
+    const response = await Promise.race([
+      client.chat.completions.create({
+        model: "gpt-4.1-mini",
 
-  const res = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "system",
-        content: "Translate to natural Vietnamese, keep meaning, no extra explanation.",
-      },
-      {
-        role: "user",
-        content: text,
-      },
-    ],
-  });
+        messages: [
+          {
+            role: "user",
+            content: `Translate to Vietnamese:\n${text}`,
+          },
+        ],
+      }),
 
-  return res.choices[0].message.content.trim();
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Translate timeout")), 10000)
+      ),
+    ]);
+
+    return response.choices[0].message.content;
+  } catch (err) {
+    console.log("Translate error:", err.message);
+
+    return text;
+  }
 }
 
 module.exports = translateToVI;

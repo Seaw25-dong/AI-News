@@ -23,14 +23,30 @@ global.io = io;
 async function start() {
   await connectDB();
 
-  app.get("/news", async (req, res) => {
+app.get(
+  "/news",
+  async (req, res) => {
+
     try {
-      const news = await News.find().sort({ createdAt: -1 });
+
+      const news =
+        await News.find()
+          .sort({
+            publishedAt: -1
+          });
+
       res.json(news);
+
     } catch (err) {
-      res.status(500).json({ error: err.message });
+
+      console.log(err);
+
+      res.status(500).json({
+        error: err.message
+      });
     }
-  });
+  }
+);
 
   server.listen(3001, () => {
     console.log("Server running on port 3001");

@@ -8,24 +8,45 @@ const client = new OpenAI({
 
 async function summarize(text) {
 
-  const response =
-    await client.chat.completions.create({
+  try {
 
-      model: "gpt-4.1-mini",
+    const response = await Promise.race([
 
-      messages: [
-        {
-          role: "user",
-          content:
-            `Summarize this AI news:\n${text}`
-        }
-      ]
-    });
+      client.chat.completions.create({
 
-  return response
-    .choices[0]
-    .message
-    .content;
+        model: "gpt-4.1-mini",
+
+        messages: [
+          {
+            role: "user",
+            content:
+              `Summarize this AI news in 2 short sentences:\n${text}`
+          }
+        ]
+
+      }),
+
+      // timeout 15s
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error("Timeout")),
+          15000
+        )
+      )
+
+    ]);
+
+    return response
+      .choices[0]
+      .message
+      .content;
+
+  } catch (err) {
+
+    console.log("Summarize error:", err.message);
+
+    return text;
+  }
 }
 
 module.exports = summarize;
