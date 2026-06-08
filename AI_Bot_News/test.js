@@ -1,17 +1,12 @@
-const axios = require("axios");
-
-async function test() {
-
-  await axios.post(
-    process.env.DISCORD_WEBHOOK,
-    {
-      content: "Bot hoạt động rồi 🚀"
-    }
-  );
-
-  console.log("Sent");
-}
-
+const mongoose = require("mongoose");
 require("dotenv").config();
+const uri = process.env.PASTE_URI_FULL;
 
-test();
+mongoose.connect(uri)
+  .then(() => {
+    console.log("CONNECTED");
+    process.exit();
+  })
+  .catch(err => {
+    console.log(err);
+  });
