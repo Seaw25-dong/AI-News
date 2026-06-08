@@ -7,6 +7,7 @@ const { Server } = require("socket.io");
 
 const connectDB = require("./db");
 const News = require("./models/News");
+const { startBot } = require("./bot");
 
 const app = express();
 app.use(cors());
@@ -14,39 +15,30 @@ app.use(cors());
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: { origin: "*" }
+  cors: { origin: "*" },
 });
 
 global.io = io;
 
-// ⬇️ QUAN TRỌNG: start server sau khi connect DB
+// API
+app.get("/news", async (req, res) => {
+  try {
+    const news = await News.find().sort({
+      publishedAt: -1,
+    });
+
+    res.json(news);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 async function start() {
   await connectDB();
+  console.log("DB connected");
 
-app.get(
-  "/news",
-  async (req, res) => {
-
-    try {
-
-      const news =
-        await News.find()
-          .sort({
-            publishedAt: -1
-          });
-
-      res.json(news);
-
-    } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        error: err.message
-      });
-    }
-  }
-);
+  // start bot trong cùng process
+  startBot();
 
   server.listen(3001, () => {
     console.log("Server running on port 3001");
