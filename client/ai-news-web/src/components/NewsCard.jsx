@@ -1,15 +1,22 @@
-export default function NewsCard({ title, summary, link, createdAt, index }) {
+export default function NewsCard({
+  title,
+  summary,
+  link,
+  createdAt,
+  index = 0,
+}) {
   const formatDate = (date) => {
-    const d = new Date(date);
+    if (!date) return "";
 
-    const dd = String(d.getDate()).padStart(2, "0");
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const yyyy = d.getFullYear();
-
-    return `${dd}/${mm}/${yyyy}`;
+    return new Intl.DateTimeFormat("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(date));
   };
 
-  const darkCard = index % 2 !== 0;
+  const darkCard = Number(index) % 2 !== 0;
 
   const gradients = [
     "from-blue-500 to-cyan-500",
@@ -22,45 +29,13 @@ export default function NewsCard({ title, summary, link, createdAt, index }) {
 
   return (
     <div
-      className={`
-      group
-      flex
-      flex-col
-      sm:flex-row
-      gap-5
-      rounded-[28px]
-      p-4
-      sm:p-5
-      shadow-lg
-      transition-all
-      duration-500
-      hover:-translate-y-2
-      hover:shadow-2xl
-      overflow-hidden
-      w-full
-      max-w-[760px]
-      ${darkCard ? "bg-[#18181b] text-white" : "bg-white text-black"}
-    `}
+      className={`group flex flex-col sm:flex-row gap-4 rounded-[22px] p-3 sm:p-4 shadow-md transition-all duration-500 hover:-translate-y-1 hover:shadow-xl overflow-hidden w-full max-w-[650px] ${
+        darkCard ? "bg-[#18181b] text-white" : "bg-white text-black"
+      }`}
     >
       {/* IMAGE */}
       <div
-        className={`
-        w-full
-        sm:min-w-[180px]
-        sm:w-[180px]
-        h-[140px]
-        sm:h-[180px]
-        rounded-[24px]
-        bg-gradient-to-br
-        ${gradient}
-        flex
-        items-center
-        justify-center
-        text-white
-        text-4xl
-        sm:text-5xl
-        font-bold
-      `}
+        className={`w-full sm:min-w-[140px] sm:w-[140px] h-[120px] sm:h-[140px] rounded-[18px] bg-gradient-to-br ${gradient} flex items-center justify-center text-white text-3xl sm:text-4xl font-bold`}
       >
         AI
       </div>
@@ -68,65 +43,36 @@ export default function NewsCard({ title, summary, link, createdAt, index }) {
       {/* CONTENT */}
       <div className="flex flex-col flex-1">
         {/* TITLE */}
-        <h2
-          className="
-          text-xl
-          sm:text-2xl
-          font-bold
-          leading-tight
-          line-clamp-3
-        "
-        >
+        <h2 className="text-lg sm:text-xl font-bold leading-snug line-clamp-2">
           {title}
         </h2>
 
         {/* SUMMARY */}
         <p
-          className={`
-          mt-4
-          text-sm
-          sm:text-base
-          leading-6
-          sm:leading-7
-          line-clamp-3
-          flex-1
-          ${darkCard ? "text-gray-300" : "text-gray-600"}
-        `}
+          className={`mt-3 text-sm leading-6 line-clamp-2 flex-1 ${
+            darkCard ? "text-gray-300" : "text-gray-600"
+          }`}
         >
           {summary}
         </p>
 
         {/* FOOTER */}
-        <div className="flex items-center justify-between mt-5 gap-3">
+        <div className="flex items-center justify-between mt-4 gap-3">
           {/* AUTHOR */}
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              className="
-              w-10
-              h-10
-              rounded-full
-              bg-gradient-to-r
-              from-blue-500
-              to-purple-500
-              text-white
-              flex
-              items-center
-              justify-center
-              font-bold
-              flex-shrink-0
-            "
-            >
-              {title.charAt(0)}
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+              {title?.charAt(0) || "A"}
             </div>
 
             <div className="min-w-0">
-              <p className="font-semibold text-sm truncate">AI Daily News</p>
+              <p className="font-semibold text-xs truncate">
+                AI Daily News
+              </p>
 
               <p
-                className={`
-                text-xs
-                ${darkCard ? "text-gray-400" : "text-gray-500"}
-              `}
+                className={`text-[11px] ${
+                  darkCard ? "text-gray-400" : "text-gray-500"
+                }`}
               >
                 {formatDate(createdAt)}
               </p>
@@ -138,20 +84,7 @@ export default function NewsCard({ title, summary, link, createdAt, index }) {
             href={link}
             target="_blank"
             rel="noreferrer"
-            className="
-            w-11
-            h-11
-            rounded-full
-            bg-purple-600
-            text-white
-            flex
-            items-center
-            justify-center
-            text-lg
-            hover:scale-110
-            transition
-            flex-shrink-0
-          "
+            className="w-9 h-9 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm hover:scale-110 transition-all duration-300 flex-shrink-0"
           >
             →
           </a>
