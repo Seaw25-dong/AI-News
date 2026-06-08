@@ -17,9 +17,9 @@ export default function Home() {
         console.log("API data:", data);
 
         if (Array.isArray(data)) {
-          setNews(data);
+          setNews([...data].reverse());
         } else if (Array.isArray(data?.data)) {
-          setNews(data.data);
+          setNews([...data.data].reverse());
         } else {
           setNews([]);
         }
@@ -36,22 +36,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 overflow-hidden">
-
       {/* HEADER */}
       <Header />
 
       {/* HERO */}
       <section className="bg-gradient-to-r from-black via-gray-900 to-black text-white overflow-hidden relative">
-
         {/* HERO GLOW */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-blob" />
 
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
 
         <div className="max-w-6xl mx-auto px-6 py-24 relative z-10">
-
           <div className="animate-fadeInUp">
-
             <p className="text-blue-400 font-semibold tracking-[0.3em] uppercase">
               AI DAILY NEWS
             </p>
@@ -83,19 +79,14 @@ export default function Home() {
             >
               Explore News
             </button>
-
           </div>
-
         </div>
-
       </section>
 
       {/* NEWS SECTION */}
       <main className="relative max-w-6xl mx-auto px-6 py-20 overflow-hidden">
-
         {/* BACKGROUND ANIMATION */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-
           <div
             className="
               absolute
@@ -139,12 +130,10 @@ export default function Home() {
               animation-delay-4000
             "
           />
-
         </div>
 
         {/* TITLE */}
         <div className="relative z-10 flex items-center justify-between mb-14">
-
           <div>
             <h3 className="text-4xl font-bold text-gray-900">
               Latest Articles
@@ -171,7 +160,6 @@ export default function Home() {
           >
             {news.length} Articles
           </div>
-
         </div>
 
         {/* GRID */}
@@ -215,7 +203,6 @@ export default function Home() {
 
         {/* PAGINATION */}
         <div className="relative z-10 flex items-center justify-center gap-5 mt-20">
-
           {/* PREV */}
           <button
             disabled={page === 1}
@@ -241,9 +228,7 @@ export default function Home() {
               disabled:hover:translate-y-0
             "
           >
-            <span className="inline-flex items-center gap-2">
-              ← Prev
-            </span>
+            <span className="inline-flex items-center gap-2">← Prev</span>
           </button>
 
           {/* PAGE */}
@@ -286,23 +271,15 @@ export default function Home() {
               disabled:hover:translate-y-0
             "
           >
-            <span className="inline-flex items-center gap-2">
-              Next →
-            </span>
+            <span className="inline-flex items-center gap-2">Next →</span>
           </button>
-
         </div>
-
       </main>
 
       {/* FOOTER */}
       <footer className="bg-white/70 backdrop-blur-xl border-t border-white/50 mt-24">
-
         <div className="max-w-6xl mx-auto px-6 py-10 text-center">
-
-          <h4 className="font-bold text-gray-900 text-xl">
-            AI Daily News
-          </h4>
+          <h4 className="font-bold text-gray-900 text-xl">AI Daily News</h4>
 
           <p className="text-gray-500 mt-2 text-sm">
             Built with Next.js & Tailwind CSS
@@ -311,11 +288,8 @@ export default function Home() {
           <p className="text-gray-400 text-sm mt-4">
             © 2026 All rights reserved.
           </p>
-
         </div>
-
       </footer>
-
     </div>
   );
 }
