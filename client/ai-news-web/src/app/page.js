@@ -15,9 +15,21 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setNews([...data].reverse());
+          const sorted = [...data].sort(
+            (a, b) =>
+              new Date(b.publishedAt || b.createdAt) -
+              new Date(a.publishedAt || a.createdAt),
+          );
+
+          setNews(sorted);
         } else if (Array.isArray(data?.data)) {
-          setNews([...data.data].reverse());
+          const sorted = [...data.data].sort(
+            (a, b) =>
+              new Date(b.publishedAt || b.createdAt) -
+              new Date(a.publishedAt || a.createdAt),
+          );
+
+          setNews(sorted);
         } else {
           setNews([]);
         }
@@ -53,9 +65,7 @@ export default function Home() {
               machine learning, robotics, and modern technology.
             </p>
 
-            <button
-              className="mt-8 bg-white text-black px-7 py-4 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:-translate-y-1 active:scale-95"
-            >
+            <button className="mt-8 bg-white text-black px-7 py-4 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:-translate-y-1 active:scale-95">
               Explore News
             </button>
           </div>
@@ -88,10 +98,12 @@ export default function Home() {
         </div>
 
         {/* GRID */}
-        <div key={page} className="relative z-10 flex flex-col gap-12 animate-fadeIn">
+        <div
+          key={page}
+          className="relative z-10 flex flex-col gap-12 animate-fadeIn"
+        >
           {currentNews.map((item, index) => {
-            const alignClass =
-              index % 2 === 0 ? "self-start" : "self-end";
+            const alignClass = index % 2 === 0 ? "self-start" : "self-end";
 
             return (
               <div
@@ -103,7 +115,7 @@ export default function Home() {
                   title={item.title}
                   summary={item.summary}
                   link={item.link}
-                  createdAt={item.createdAt}
+                  createdAt={item.publishedAt}
                 />
               </div>
             );

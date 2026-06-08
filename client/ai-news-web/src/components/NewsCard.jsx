@@ -5,16 +5,19 @@ export default function NewsCard({
   createdAt,
   index = 0,
 }) {
-  const formatDate = (date) => {
-    if (!date) return "";
+ const formatDate = (date) => {
+  if (!date) return "";
 
-    return new Intl.DateTimeFormat("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(new Date(date));
-  };
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(new Date(date));
+};
 
   const darkCard = Number(index) % 2 !== 0;
 
