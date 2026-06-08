@@ -11,7 +11,7 @@ export default function Home() {
   const pageSize = 6;
 
   useEffect(() => {
-    fetch("http://localhost:3001/news")
+    fetch("https://ai-news-api-bm3r.onrender.com/news")
       .then((res) => res.json())
       .then((data) => {
         console.log("API data:", data);
